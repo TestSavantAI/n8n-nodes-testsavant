@@ -1,7 +1,7 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/90e9550b-5035-4c81-bda1-84ea6876f965" />
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/6c31f752-c2ef-4f35-b29b-d08d43afefb1" />
-  <img width="400px" height="auto" alt="TestSavant.AI Logo Image" src="https://github.com/user-attachments/assets/90e9550b-5035-4c81-bda1-84ea6876f965" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1acb44ce-098f-4e95-b151-8158d23e578e" />
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/b4cb72e0-34fa-4c21-9969-fc07b95071ff" />
+  <img width="400px" height="auto" alt="TestSavant.AI Logo Image" src="https://github.com/user-attachments/assets/b4cb72e0-34fa-4c21-9969-fc07b95071ff" />
 </picture>
 
 # TestSavant.AI for n8n
@@ -48,11 +48,10 @@ Notes:
 - You can revoke/regenerate keys any time from the API Keys page.
 
 #### Create an API Key
-<img width="466" height="255" alt="Screenshot 2025-09-24 at 1 59 26 PM" src="https://github.com/user-attachments/assets/6ba1ca56-092b-47b7-8dde-07df36347200" />
-<img width="468" height="339" alt="Screenshot 2025-09-24 at 1 59 36 PM" src="https://github.com/user-attachments/assets/17461e43-9a4a-453b-858c-86c84f204e40" />
+<img width="466" height="255" alt="Screenshot 2025-09-24 at 1 59 26 PM" src="https://github.com/user-attachments/assets/9ff59662-6fa8-4976-804f-4f745058a95b" />
+<img width="auto" height="255" alt="Screenshot 2025-09-24 at 1 59 36 PM" src="https://github.com/user-attachments/assets/2b882b89-86b1-4b74-9e1e-0296cdd71249" />
 
-
-<img width="1488" height="314" alt="Screenshot 2025-09-24 at 1 59 59 PM" src="https://github.com/user-attachments/assets/ba31988f-9af2-49f4-8462-8f063ffb0206" />
+<img width="1488" height="314" alt="Screenshot 2025-09-24 at 1 59 59 PM" src="https://github.com/user-attachments/assets/68d9cf67-0ee3-4555-a0c4-512cd0075578" />
 
 ### Create or manage Projects
 
@@ -62,7 +61,7 @@ Notes:
 4. Select the project you want to use for guardrailing (its policies/config apply to scans).
 
 #### Use API Key in n8n
-<img width="1214" height="455" alt="Screenshot 2025-09-24 at 1 56 06 PM" src="https://github.com/user-attachments/assets/5f2dac3a-9679-4369-8375-eb599f10af1b" />
+<img width="1214" height="455" alt="Screenshot 2025-09-24 at 1 56 06 PM" src="https://github.com/user-attachments/assets/a93c4ba2-0385-4604-be04-6aa8a7445e4e" />
 
 Credentials are stored securely by n8n.
 
@@ -80,9 +79,9 @@ Credentials are stored securely by n8n.
 
 The node processes one item per incoming item, so it fits naturally in n8n pipelines.
 
-<img width="1438" height="769" alt="Screenshot 2025-09-23 at 6 31 57 PM" src="https://github.com/user-attachments/assets/4659bd7f-96ff-42ef-874b-ce84689e0b20" />
+<img width="1438" height="769" alt="Screenshot 2025-09-23 at 6 31 57 PM" src="https://github.com/user-attachments/assets/8af38a14-2fc2-48ac-9f68-e0a28ff6247c" />
 
-<img width="1768" height="923" alt="Screenshot 2025-09-23 at 6 33 37 PM" src="https://github.com/user-attachments/assets/cdb5a3f8-08a3-4c77-93a3-a07d674bc781" />
+<img width="1768" height="923" alt="Screenshot 2025-09-23 at 6 33 37 PM" src="https://github.com/user-attachments/assets/3d7dbe7f-9446-45d2-90b0-5eab58b982cf" />
 
 ## Input/Output
 
