@@ -48,8 +48,8 @@ Notes:
 - You can revoke/regenerate keys any time from the API Keys page.
 
 #### Create an API Key
-<img width="466" height="255" alt="Screenshot 2025-09-24 at 1 59 26 PM" src="https://github.com/user-attachments/assets/9ff59662-6fa8-4976-804f-4f745058a95b" />
-<img width="auto" height="255" alt="Screenshot 2025-09-24 at 1 59 36 PM" src="https://github.com/user-attachments/assets/2b882b89-86b1-4b74-9e1e-0296cdd71249" />
+<img width="auto" height="230" alt="Screenshot 2025-09-24 at 1 59 26 PM" src="https://github.com/user-attachments/assets/9ff59662-6fa8-4976-804f-4f745058a95b" />
+<img width="auto" height="230" alt="Screenshot 2025-09-24 at 1 59 36 PM" src="https://github.com/user-attachments/assets/2b882b89-86b1-4b74-9e1e-0296cdd71249" />
 
 <img width="1488" height="314" alt="Screenshot 2025-09-24 at 1 59 59 PM" src="https://github.com/user-attachments/assets/68d9cf67-0ee3-4555-a0c4-512cd0075578" />
 
