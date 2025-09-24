@@ -1,0 +1,68 @@
+{
+  "name": "@testsavant/n8n-nodes-testsavant",
+  "version": "1.0.0",
+  "description": "n8n community node for TestSavant Guard safety checks.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "testsavant",
+    "guard",
+    "ai-safety"
+  ],
+  "license": "MIT",
+  "homepage": "https://testsavant.ai",
+  "author": {
+    "name": "TestSavant.AI",
+    "email": "support@testsavant.ai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TestSavantAI/n8n-nodes-testsavant.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TestSavantAI/n8n-nodes-testsavant/issues"
+  },
+  "engines": {
+    "node": ">=18.18"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc && gulp build:icons",
+    "deploy": "npm run build && mkdir -p ~/.n8n/custom/nodes ~/.n8n/custom/credentials && rm -rf ~/.n8n/custom/nodes/TestSavantGuard && cp -r dist/nodes/TestSavantGuard ~/.n8n/custom/nodes/ && cp dist/credentials/TestSavantGuardApi.credentials.js ~/.n8n/custom/credentials/",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lint:prepublish": "eslint -c .eslintrc.prepublish.js nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint:prepublish"
+  },
+  "files": [
+    "dist",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/TestSavantGuardApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/TestSavantGuard/TestSavantGuard.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "~8.32.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.3",
+    "gulp": "^5.0.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

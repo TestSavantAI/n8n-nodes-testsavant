@@ -1,0 +1,20 @@
+{
+  "name": "testSavantGuard",
+  "displayName": "TestSavant.AI",
+  "version": 1,
+  "description": "Guardrails prompts and outputs using TestSavant.AI. Select a Project from your TestSavant account to apply your organization policies (prompt injection, PII, toxicity, etc.). Create an API key and Projects at app.testsavant.ai, add the key as an n8n credential, then choose a Project from the dropdown.",
+  "defaults": { "name": "TestSavant.AI" },
+  "icon": "file:icons/ts_icon.svg",
+  "group": ["transform"],
+  "codex": {
+    "categories": ["AI"],
+    "resources": {
+      "primaryDocumentation": [
+        { "url": "https://docs.testsavant.ai" }
+      ],
+      "other": [
+  { "url": "https://github.com/TestSavantAI/n8n-nodes-testsavant#readme" }
+      ]
+    }
+  }
+}
