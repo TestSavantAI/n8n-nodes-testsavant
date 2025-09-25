@@ -1,4 +1,4 @@
-import type { ICredentialType, INodeProperties, IAuthenticateGeneric } from 'n8n-workflow';
+import type { ICredentialType, INodeProperties, IAuthenticateGeneric, ICredentialTestRequest } from 'n8n-workflow';
 
 export class TestSavantGuardApi implements ICredentialType {
     name = 'testSavantGuardApi';
@@ -28,9 +28,11 @@ export class TestSavantGuardApi implements ICredentialType {
         },
     };
 
-    test = {
+    test: ICredentialTestRequest = {
         request: {
-            url: 'https://api.app.testsavant.ai/projects/api-key/projects/',
+            baseURL: 'https://api.app.testsavant.ai',
+            url: '/projects/api-key/projects/',
+            method: 'GET',
         },
     };
 }
