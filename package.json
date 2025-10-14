@@ -1,6 +1,6 @@
 {
   "name": "@testsavant/n8n-nodes-testsavant",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "n8n community node for TestSavant Guard safety checks.",
   "keywords": [
     "n8n-community-node-package",
