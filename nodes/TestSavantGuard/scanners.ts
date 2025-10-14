@@ -1,66 +1,61 @@
-// Centralized scanners list for easy updates
+export type ScannerCategory = 'input' | 'output' | 'unknown';
 
-export type Scanner = { name: string; type: string };
+export interface ScannerSelection {
+    id?: string;
+    name: string;
+    type: string;
+    category?: ScannerCategory;
+}
 
-// Update these lists as needed
-export const inputScanners: Scanner[] = [
-    { name: 'PromptInjection:base', type: 'PromptInjection' },
-    { name: 'Regex:default', type: 'Regex' },
-    { name: 'Gibberish:base', type: 'Gibberish' },
-    { name: 'BanSubstrings:default', type: 'BanSubstrings' },
-    { name: 'BanTopics:base', type: 'BanTopics' },
-    { name: 'Language:base', type: 'Language' },
-    { name: 'Toxicity:base', type: 'Toxicity' },
-    { name: 'Anonymize:base', type: 'Anonymize' },
-    { name: 'InvisibleText:default', type: 'InvisibleText' },
-    { name: 'Secrets:default', type: 'Secrets' },
-    { name: 'LLM:default', type: 'LLM' },
-    { name: 'TokenLimit:default', type: 'TokenLimit' },
-];
+export function normalizeScannerCategory(category?: string | null): ScannerCategory {
+    if (!category) return 'unknown';
+    const normalized = String(category).toLowerCase();
+    if (normalized === 'input' || normalized === 'output') {
+        return normalized;
+    }
+    return 'unknown';
+}
 
-export const outputScanners: Scanner[] = [
-    { name: 'Toxicity:base', type: 'Toxicity' },
-    { name: 'Bias:base', type: 'Bias' },
-    { name: 'Anonymize:base', type: 'Anonymize' },
-    { name: 'BanCode:small', type: 'BanCode' },
-    { name: 'BanSubstrings:default', type: 'BanSubstrings' },
-    { name: 'LanguageSame:base', type: 'LanguageSame' },
-    { name: 'Language:base', type: 'Language' },
-    { name: 'BanCompetitors:base', type: 'BanCompetitors' },
-    { name: 'FactualConsistency:base', type: 'FactualConsistency' },
-    { name: 'ReadingTime:default', type: 'ReadingTime' },
-    { name: 'MaliciousURLs:base', type: 'MaliciousURLs' },
-    { name: 'JSON:default', type: 'JSON' },
-    { name: 'NoRefusalLight:default', type: 'NoRefusalLight' },
-    { name: 'NoRefusal:base', type: 'NoRefusal' },
-    { name: 'Sentiment:default', type: 'Sentiment' },
-];
+export function createScannerValue(selection: ScannerSelection): string {
+    const payload: Record<string, string> = {};
+    if (selection.id) {
+        payload.id = selection.id;
+    }
+    payload.name = selection.name;
+    payload.type = selection.type;
+    if (selection.category && selection.category !== 'unknown') {
+        payload.category = selection.category;
+    }
+    return JSON.stringify(payload);
+}
 
-// Multi-select options; value is a JSON string for safe roundtrip
-export const inputScannerOptions = inputScanners.map((s) => ({
-    name: s.name,
-    value: JSON.stringify({ name: s.name, type: s.type }),
-    description: s.type,
-}));
-
-export const outputScannerOptions = outputScanners.map((s) => ({
-    name: s.name,
-    value: JSON.stringify({ name: s.name, type: s.type }),
-    description: s.type,
-}));
-
-export function parseSelectedScannerValues(values: string[]): Scanner[] {
+export function parseSelectedScannerValues(values: string[]): ScannerSelection[] {
     if (!Array.isArray(values)) return [];
-    const out: Scanner[] = [];
-    for (const v of values) {
+
+    const parsed: ScannerSelection[] = [];
+    for (const value of values) {
         try {
-            const obj = JSON.parse(v);
+            const obj = JSON.parse(value);
             if (obj && typeof obj.name === 'string' && typeof obj.type === 'string') {
-                out.push({ name: obj.name, type: obj.type });
+                const selection: ScannerSelection = {
+                    name: obj.name,
+                    type: obj.type,
+                };
+
+                if (obj.id && typeof obj.id === 'string') {
+                    selection.id = obj.id;
+                }
+
+                if (obj.category && typeof obj.category === 'string') {
+                    selection.category = normalizeScannerCategory(obj.category);
+                }
+
+                parsed.push(selection);
             }
         } catch {
             // ignore malformed entries
         }
     }
-    return out;
+
+    return parsed;
 }

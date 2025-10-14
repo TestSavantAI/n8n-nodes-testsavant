@@ -1,8 +1,7 @@
 import type { IExecuteFunctions, INodeExecutionData, INodeType, INodeTypeDescription, JsonObject } from 'n8n-workflow';
-import { NodeApiError, NodeConnectionType, 
-    NodeOperationError, ILoadOptionsFunctions } from 'n8n-workflow';
-import { inputScannerOptions, outputScannerOptions, parseSelectedScannerValues } from './scanners';
-import { fetchProjects } from './projectServices';
+import { NodeApiError, NodeConnectionType, ILoadOptionsFunctions } from 'n8n-workflow';
+import { parseSelectedScannerValues } from './scanners';
+import { fetchProjects, getProjectScannerDefaults, getScannerOptionsByCategory } from './projectServices';
 export class TestSavantGuard implements INodeType {
     description: INodeTypeDescription = {
     displayName: 'TestSavant.AI',
@@ -67,7 +66,7 @@ export class TestSavantGuard implements INodeType {
                 description:
                     'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
                 placeholder: '— Select a project —',
-                hint: 'Choose one of your projects. The list shows how many were fetched after you select a credential.',
+                hint: 'Optional: choose a project to auto-select scanners. Select "— No Project —" to clear your choice.',
             },
             {
                 displayName: 'Scan Type',
@@ -82,13 +81,16 @@ export class TestSavantGuard implements INodeType {
                 description: 'Whether this is an input or output scan',
             },
             {
-                displayName: 'Scanners',
+                displayName: 'Scanner Names or IDs',
                 name: 'scannersInput',
                 type: 'multiOptions',
-                options: inputScannerOptions,
+                typeOptions: {
+                    loadOptionsMethod: 'getInputScanners',
+                    loadOptionsDependsOn: ['credBaseUrl', 'projectId'],
+                },
                 default: [],
-                description: 'Select scanners to run for input scans',
-                hint: 'Choose one or more scanners to apply',
+                description: 'Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+                hint: 'Choose one or more scanners to apply. Selecting a project pre-fills its scanners.',
                 displayOptions: {
                     show: {
                         scanType: ['input'],
@@ -96,12 +98,16 @@ export class TestSavantGuard implements INodeType {
                 },
             },
             {
-                displayName: 'Scanners',
+                displayName: 'Scanner Names or IDs',
                 name: 'scannersOutput',
                 type: 'multiOptions',
-                options: outputScannerOptions,
+                typeOptions: {
+                    loadOptionsMethod: 'getOutputScanners',
+                    loadOptionsDependsOn: ['credBaseUrl', 'projectId'],
+                },
                 default: [],
-                description: 'Select scanners to run for output scans',
+                description: 'Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+                hint: 'Choose one or more scanners to apply. Selecting a project pre-fills its scanners.',
                 displayOptions: {
                     show: {
                         scanType: ['output'],
@@ -115,6 +121,48 @@ export class TestSavantGuard implements INodeType {
         loadOptions: {
             async getProjects(this: ILoadOptionsFunctions) {
                 return await fetchProjects.call(this);
+            },
+            async getInputScanners(this: ILoadOptionsFunctions) {
+                const options = await getScannerOptionsByCategory.call(this, 'input');
+                const currentParams = this.getCurrentNodeParameters?.() ?? {};
+                const projectId = (currentParams.projectId as string) ?? '';
+                const defaults = projectId
+                    ? await getProjectScannerDefaults.call(this, projectId)
+                    : { input: [], output: [] };
+                const defaultSet = new Set(defaults.input);
+
+                return options.map((option) => ({
+                    name: option.name,
+                    value: option.value,
+                    description: option.description
+                        ? defaultSet.has(option.value)
+                            ? `${option.description} — Default for project`
+                            : option.description
+                        : defaultSet.has(option.value)
+                            ? 'Default for selected project'
+                            : undefined,
+                }));
+            },
+            async getOutputScanners(this: ILoadOptionsFunctions) {
+                const options = await getScannerOptionsByCategory.call(this, 'output');
+                const currentParams = this.getCurrentNodeParameters?.() ?? {};
+                const projectId = (currentParams.projectId as string) ?? '';
+                const defaults = projectId
+                    ? await getProjectScannerDefaults.call(this, projectId)
+                    : { input: [], output: [] };
+                const defaultSet = new Set(defaults.output);
+
+                return options.map((option) => ({
+                    name: option.name,
+                    value: option.value,
+                    description: option.description
+                        ? defaultSet.has(option.value)
+                            ? `${option.description} — Default for project`
+                            : option.description
+                        : defaultSet.has(option.value)
+                            ? 'Default for selected project'
+                            : undefined,
+                }));
             },
         },
     };
@@ -135,6 +183,13 @@ export class TestSavantGuard implements INodeType {
                     ? (this.getNodeParameter('scannersInput', i, []) as string[])
                     : (this.getNodeParameter('scannersOutput', i, []) as string[])) || [];
 
+            let effectiveScannerValues = selectedUiValues;
+
+            if ((!effectiveScannerValues || effectiveScannerValues.length === 0) && projectId) {
+                const defaults = await getProjectScannerDefaults.call(this, projectId);
+                effectiveScannerValues = scanType === 'input' ? defaults.input : defaults.output;
+            }
+
             const prompt = promptParam || ((items[i].json.prompt as string) || '');
             const output = outputParam || ((items[i].json.output as string) || '');
 
@@ -142,15 +197,7 @@ export class TestSavantGuard implements INodeType {
             const apiUrl = `https://api.testsavant.ai/guard/${endpoint}`;
 
             // Build "use" list purely from UI selection
-            const useList = parseSelectedScannerValues(selectedUiValues);
-
-            // Require a project to be selected explicitly for now
-            if (!projectId) {
-                throw new NodeOperationError(
-                    this.getNode(),
-                    'Please select a Project from the dropdown.',
-                );
-            }
+            const useList = parseSelectedScannerValues(effectiveScannerValues || []);
 
             const payload: any = {
                 prompt,
@@ -169,7 +216,11 @@ export class TestSavantGuard implements INodeType {
                     tags: [],
                     name: 'n8n TestSavant.AI',
                 },
-                use: useList,
+                use: useList.map((scanner) =>
+                    scanner.id
+                        ? { id: scanner.id, name: scanner.name, type: scanner.type }
+                        : { name: scanner.name, type: scanner.type },
+                ),
             };
 
             if (scanType === 'output' && output) {

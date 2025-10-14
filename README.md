@@ -72,8 +72,8 @@ Credentials are stored securely by n8n.
 3. Configure fields:
   - Prompt / Output: strings to validate (you can map from previous node output, e.g. `{{$json.data}}`).
   - Scan Type: Input or Output.
-  - Project: loads after selecting credentials. Choose one to continue.
-  - Scanners: select which scanners to evaluate.
+  - Project: optional. Pick one to auto-apply its scanners, or choose “— No Project —” to manage scanners manually.
+  - Scanners: loads every scanner available to your account. Selecting a project automatically pre-selects its active scanners, and you can add more from the full list.
 
 4. Run the workflow.
 
