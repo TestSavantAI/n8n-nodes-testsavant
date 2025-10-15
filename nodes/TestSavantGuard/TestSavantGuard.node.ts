@@ -193,6 +193,13 @@ export class TestSavantGuard implements INodeType {
             const prompt = promptParam || ((items[i].json.prompt as string) || '');
             const output = outputParam || ((items[i].json.output as string) || '');
 
+            if (scanType === 'input' && !prompt) {
+                throw new NodeApiError(this.getNode(), { message: 'Prompt is required for input scans.' });
+            }
+            if (scanType === 'output' && (!prompt || !output)) {
+                throw new NodeApiError(this.getNode(), { message: 'Prompt & Output is required for output scans.' });
+            }
+
             const endpoint = scanType === 'input' ? 'prompt-input' : 'prompt-output';
             const apiUrl = `https://api.testsavant.ai/guard/${endpoint}`;
 
@@ -211,7 +218,7 @@ export class TestSavantGuard implements INodeType {
                 },
                 metadata: {
                     'project-type': 'n8n Workflow',
-                    session: `session-${Date.now()}`,
+                    session: `n8n-session-${Date.now()}-${i}`,
                     file: 'n8n-testsavant-guard',
                     tags: [],
                     name: 'n8n TestSavant.AI',
@@ -241,12 +248,15 @@ export class TestSavantGuard implements INodeType {
                 const result = (response as JsonObject) || {};
                 const isSafe = (result as any)?.is_valid === true;
 
-                const outputData = {
+                const outputData: INodeExecutionData = {
                     json: {
                         valid: isSafe,
                         prompt,
                         output,
                         result,
+                    },
+                    pairedItem: {
+                        item: i,
                     },
                 };
 
@@ -256,6 +266,13 @@ export class TestSavantGuard implements INodeType {
                     falseOutput.push(outputData);
                 }
             } catch (error) {
+                if (this.continueOnFail?.()) {
+                    falseOutput.push({
+                    json: { error: (error as Error).message, prompt, output, valid: false },
+                    pairedItem: { item: i },
+                    });
+                    continue;
+                }
                 throw new NodeApiError(this.getNode(), error as JsonObject);
             }
         }
