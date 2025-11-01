@@ -28,6 +28,7 @@ export class TestSavantGuard implements INodeType {
 					displayName: 'Resource',
 					name: 'resource',
 					type: 'options',
+					noDataExpression: true,
 					options: [
 						{ name: 'Scan', value: 'scan' },
 					],
@@ -37,8 +38,9 @@ export class TestSavantGuard implements INodeType {
 					displayName: 'Operation',
 					name: 'operation',
 					type: 'options',
+					noDataExpression: true,
 					options: [
-						{ name: 'Validate', value: 'validate' },
+						{ name: 'Validate', value: 'validate', action: 'Validate a scan' },
 					],
 					default: 'validate',
 					displayOptions: {
