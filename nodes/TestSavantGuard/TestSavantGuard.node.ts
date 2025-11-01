@@ -9,7 +9,7 @@ export class TestSavantGuard implements INodeType {
         group: ['transform'],
         version: 1,
     description: 'Validates a prompt or output using TestSavant.AI Guard API',
-        subtitle: 'Validate prompts and outputs for safety',
+		subtitle: '={{ $parameter["resource"] + ": " + $parameter["operation"] }}',
         icon: 'file:icons/ts_icon.svg',
         defaults: {
             name: 'TestSavant.AI',
@@ -23,7 +23,30 @@ export class TestSavantGuard implements INodeType {
         inputs: [NodeConnectionType.Main],
     outputs: [NodeConnectionType.Main, NodeConnectionType.Main],
     outputNames: ['valid', 'not valid'],
-        properties: [
+			properties: [
+				{
+					displayName: 'Resource',
+					name: 'resource',
+					type: 'options',
+					options: [
+						{ name: 'Scan', value: 'scan' },
+					],
+					default: 'scan',
+				},
+				{
+					displayName: 'Operation',
+					name: 'operation',
+					type: 'options',
+					options: [
+						{ name: 'Validate', value: 'validate' },
+					],
+					default: 'validate',
+					displayOptions: {
+						show: {
+							resource: ['scan'],
+						},
+					},
+				},
             {
                 displayName: 'Credential Marker',
                 name: 'credBaseUrl',
@@ -44,6 +67,12 @@ export class TestSavantGuard implements INodeType {
                 placeholder: 'Enter prompt text here',
                 description: 'Prompt to scan; can be blank if coming from input',
                 hint: 'The input prompt to the LLM, required for input scans',
+					displayOptions: {
+						show: {
+							resource: ['scan'],
+							operation: ['validate'],
+						},
+					},
             },
             {
                 displayName: 'Output',
@@ -53,6 +82,12 @@ export class TestSavantGuard implements INodeType {
                 placeholder: 'Enter output text here',
                 description: 'Output to scan (optional)',
                 hint: 'The output of the LLM, required for output scans',
+					displayOptions: {
+						show: {
+							resource: ['scan'],
+							operation: ['validate'],
+						},
+					},
             },
             {
                 displayName: 'Project Name or ID',
@@ -67,6 +102,12 @@ export class TestSavantGuard implements INodeType {
                     'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
                 placeholder: '— Select a project —',
                 hint: 'Optional: choose a project to auto-select scanners. Select "— No Project —" to clear your choice.',
+					displayOptions: {
+						show: {
+							resource: ['scan'],
+							operation: ['validate'],
+						},
+					},
             },
             {
                 displayName: 'Scan Type',
@@ -79,6 +120,12 @@ export class TestSavantGuard implements INodeType {
                 default: 'input',
                 hint: 'Select whether to scan the input prompt or the output',
                 description: 'Whether this is an input or output scan',
+					displayOptions: {
+						show: {
+							resource: ['scan'],
+							operation: ['validate'],
+						},
+					},
             },
             {
                 displayName: 'Scanner Names or IDs',
@@ -93,6 +140,8 @@ export class TestSavantGuard implements INodeType {
                 hint: 'Choose one or more scanners to apply. Selecting a project pre-fills its scanners.',
                 displayOptions: {
                     show: {
+							resource: ['scan'],
+							operation: ['validate'],
                         scanType: ['input'],
                     },
                 },
@@ -110,6 +159,8 @@ export class TestSavantGuard implements INodeType {
                 hint: 'Choose one or more scanners to apply. Selecting a project pre-fills its scanners.',
                 displayOptions: {
                     show: {
+							resource: ['scan'],
+							operation: ['validate'],
                         scanType: ['output'],
                     },
                 },
