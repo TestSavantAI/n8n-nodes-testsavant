@@ -1,11 +1,12 @@
 # Locally: npm run release  (bumps version, changelog, commit, tag, push)
-# CI: push triggers this workflow on tag *.*.* and publishes with provenance.
+# CI: push tag publishes with provenance. release-it tags v1.2.3 (v-prefix).
 
 name: Publish
 
 on:
   push:
     tags:
+      - 'v*.*.*'
       - '*.*.*'
 
 jobs:
