@@ -1,17 +1,11 @@
-# Locally: npm run release  (bumps version, changelog, commit, tag, push)
-# CI publishes with provenance when:
-# - A version tag is pushed (release-it uses v1.2.3), OR
-# - You run this workflow manually from the Actions tab (workflow_dispatch).
-#
-# Pushing commits to main alone does NOT run this workflow.
-
 name: Publish
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
-      - '*.*.*'
+    branches:
+      - main
+    paths:
+      - 'package.json'
   workflow_dispatch:
 
 jobs:
@@ -35,7 +29,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Skip if version already on npm
+        id: npm
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "Version ${VERSION} is already published — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version ${VERSION} not on registry — will publish."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Release
+        if: steps.npm.outputs.skip != 'true'
         run: |
           if [ -n "$NPM_TOKEN" ]; then
             npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
