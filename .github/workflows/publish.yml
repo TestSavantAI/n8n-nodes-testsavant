@@ -1,5 +1,9 @@
 # Locally: npm run release  (bumps version, changelog, commit, tag, push)
-# CI: push tag publishes with provenance. release-it tags v1.2.3 (v-prefix).
+# CI publishes with provenance when:
+# - A version tag is pushed (release-it uses v1.2.3), OR
+# - You run this workflow manually from the Actions tab (workflow_dispatch).
+#
+# Pushing commits to main alone does NOT run this workflow.
 
 name: Publish
 
@@ -8,6 +12,7 @@ on:
     tags:
       - 'v*.*.*'
       - '*.*.*'
+  workflow_dispatch:
 
 jobs:
   publish:
