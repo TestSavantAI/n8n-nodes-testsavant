@@ -8,7 +8,8 @@ export class TestSavantGuard implements INodeType {
         name: 'testSavantGuard',
         group: ['transform'],
         version: 1,
-    description: 'Validates a prompt or output using TestSavant.AI Guard API',
+    description:
+        'Guardrails prompts and outputs using TestSavant.AI.',
 		subtitle: '={{ $parameter["resource"] + ": " + $parameter["operation"] }}',
         icon: 'file:icons/ts_icon.svg',
         defaults: {
