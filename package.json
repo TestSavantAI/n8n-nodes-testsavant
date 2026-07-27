@@ -69,5 +69,8 @@
   "publishConfig": {
     "access": "public",
     "provenance": true
+  },
+  "overrides": {
+    "axios": ">=1.18.0"
   }
 }
